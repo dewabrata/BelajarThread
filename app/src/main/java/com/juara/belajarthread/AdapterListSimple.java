@@ -67,6 +67,19 @@ public class AdapterListSimple extends RecyclerView.Adapter<AdapterListSimple.Vi
         }
 
 
+        holder.parentLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, DetailActivity.class);
+                try {
+                    intent.putExtra("json", ((JSONObject)data.get(position)).toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                context.startActivity(intent);
+            }
+        });
+
     }
 
     @Override

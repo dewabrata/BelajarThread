@@ -47,9 +47,13 @@ public class MainActivity extends AppCompatActivity {
         }).start();
 
     }
+
+
+
     String text;
     JSONObject json;
     JSONArray listOfNews = new JSONArray();
+
     private void openHttpConnection(String urlStr) {
         InputStream in = null;
         int resCode = -1;
