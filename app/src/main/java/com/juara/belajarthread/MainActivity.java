@@ -1,10 +1,22 @@
 package com.juara.belajarthread;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.os.Debug;
+import android.util.Log;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,15 +25,20 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Iterator;
 
 public class MainActivity extends AppCompatActivity {
 
-    TextView txtHasil;
+
+    RecyclerView lstNews;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        txtHasil = findViewById(R.id.txtHasil);
+
+        lstNews = findViewById(R.id.lstNews);
+
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -31,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
 
     }
     String text;
+    JSONObject json;
+    JSONArray listOfNews = new JSONArray();
     private void openHttpConnection(String urlStr) {
         InputStream in = null;
         int resCode = -1;
@@ -80,13 +99,45 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
+        try {
+             json = new JSONObject(text);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        try {
+             listOfNews = (JSONArray) json.get("articles");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+
+
+        Log.d("Test","");
+
+
+
+
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                txtHasil.setText(text);
+                    setListNews(listOfNews);
             }
         });
 
     }
 
+
+    public void setListNews(JSONArray data){
+
+
+
+        AdapterListSimple adapter = new AdapterListSimple(MainActivity.this,data);
+
+        lstNews.setLayoutManager(new LinearLayoutManager(this));
+        lstNews.setItemAnimator(new DefaultItemAnimator());
+        lstNews.setAdapter(adapter);
+
+    }
 }
